@@ -40,11 +40,15 @@ public class GameController : MonoBehaviour
 
     public Transform orb;
 
+    public Transform goal;
+
     public GUIText scoreText;
 
     int _orbsCollected;
 
     int _orbsTotal;
+
+    ParticleSystem _goalPS;
 
     void BuildLevel()
     {
@@ -75,6 +79,9 @@ public class GameController : MonoBehaviour
                     case 3:
                         toCreate = orb;
                         break;
+                    case 4:
+                        toCreate =  goal;
+                        break;
                     default:
                         print("Invalid number: " + levelItemId);
                         break;
@@ -85,6 +92,9 @@ public class GameController : MonoBehaviour
                     var newObject =
                         (Transform)
                             Instantiate(toCreate, new Vector3(xPos, (_level.Length - yPos), 0), Quaternion.identity);
+
+                    if (goal == toCreate)
+                        _goalPS = newObject.gameObject.GetComponent<ParticleSystem>();
 
                     // Set the object's parent to DynamicObjects so it doesn't clutter
                     // the hierarchy.
@@ -121,5 +131,8 @@ public class GameController : MonoBehaviour
     {
         _orbsCollected++;
         UpdateScoreText();
+
+        if (_orbsCollected >= _orbsTotal)
+            _goalPS.Play();
     }
 }
