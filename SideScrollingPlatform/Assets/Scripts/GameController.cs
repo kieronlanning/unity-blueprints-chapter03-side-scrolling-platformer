@@ -34,6 +34,10 @@ public class GameController : MonoBehaviour
 
     public Transform wall;
 
+    public Transform player;
+
+    public Transform orb;
+
     void BuildLevel()
     {
         // Get the DynamicObjects object that we created in the scene
@@ -46,13 +50,32 @@ public class GameController : MonoBehaviour
         {
             for (var xPos = 0; xPos < _level[yPos].Length; xPos++)
             {
-                // Do nothing if the value is 0.
-                // If it's 1, then we want to create a wall.
+                Transform toCreate = null;
 
-                if (_level[yPos][xPos] == 1)
+                var levelItemId = _level[yPos][xPos];
+                switch (levelItemId)
                 {
-                    // Create a wall.
-                    var newObject = (Transform) Instantiate(wall, new Vector3(xPos, (_level.Length - yPos), 0), Quaternion.identity);
+                    case 0:
+                        // Do nothing because we don't want anything there.
+                        break;
+                    case 1:
+                        toCreate = wall;
+                        break;
+                    case 2:
+                        toCreate = player;
+                        break;
+                    case 3:
+                        toCreate = orb;
+                        break;
+                    default:
+                        print("Invalid number: " + levelItemId);
+                        break;
+                }
+
+                if (toCreate != null)
+                {
+                    var newObject =
+                        (Transform) Instantiate(toCreate, new Vector3(xPos, (_level.Length - yPos), 0), Quaternion.identity);
 
                     // Set the object's parent to DynamicObjects so it doesn't clutter
                     // the hierarchy.
