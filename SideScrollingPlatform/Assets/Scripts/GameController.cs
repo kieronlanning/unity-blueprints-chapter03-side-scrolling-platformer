@@ -32,11 +32,19 @@ public class GameController : MonoBehaviour
         new[] {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 
+    static public GameController Instance;
+
     public Transform wall;
 
     public Transform player;
 
     public Transform orb;
+
+    public GUIText scoreText;
+
+    int _orbsCollected;
+
+    int _orbsTotal;
 
     void BuildLevel()
     {
@@ -75,7 +83,8 @@ public class GameController : MonoBehaviour
                 if (toCreate != null)
                 {
                     var newObject =
-                        (Transform) Instantiate(toCreate, new Vector3(xPos, (_level.Length - yPos), 0), Quaternion.identity);
+                        (Transform)
+                            Instantiate(toCreate, new Vector3(xPos, (_level.Length - yPos), 0), Quaternion.identity);
 
                     // Set the object's parent to DynamicObjects so it doesn't clutter
                     // the hierarchy.
@@ -89,11 +98,28 @@ public class GameController : MonoBehaviour
     void Start()
     {
         BuildLevel();
+
+        var orbs = GameObject.FindGameObjectsWithTag("Orb");
+
+        _orbsCollected = 0;
+        _orbsTotal = orbs.Length;
+
+        UpdateScoreText();
     }
 
-    // Update is called once per frame
-    void Update()
+    void UpdateScoreText()
     {
+        scoreText.text = "Orbs: " + _orbsCollected + "/" + _orbsTotal;
+    }
 
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    public void CollectedOrb()
+    {
+        _orbsCollected++;
+        UpdateScoreText();
     }
 }
