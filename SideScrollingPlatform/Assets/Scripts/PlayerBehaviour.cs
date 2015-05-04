@@ -141,7 +141,8 @@ public class PlayerBehaviour : MonoBehaviour
         if (!_onGround)
         {
             // Check if there is something directly below us...
-            if (Physics.Raycast(origin, floorDirection, distance))
+            var layerMask = LayerMask.NameToLayer("Orb");
+            if (Physics.Raycast(origin, floorDirection, distance, layerMask))
                 _onGround = true;
         }
         // If we are currently grounded, are we falling down or jumping?
